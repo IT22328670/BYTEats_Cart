@@ -8,5 +8,6 @@ router.post('/add', cartController.addToCart);
 router.put('/update', cartController.updateItem);
 router.delete('/remove', cartController.removeItem);
 router.delete('/clear', cartController.clearCart);
+router.post('/checkout/:userId', cartController.checkoutCart);
 
 export default router;

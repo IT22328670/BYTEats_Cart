@@ -50,3 +50,14 @@ export const clearCart = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Failed to clear cart', message: (err as Error).message });
   }
 };
+
+export const checkoutCart = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const order = await cartService.checkoutCart(userId);
+    res.status(201).json({ message: "Order placed successfully", order });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to checkout cart', message: (err as Error).message });
+  }
+};
+

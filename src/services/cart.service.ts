@@ -1,4 +1,5 @@
 import { Cart } from "../models/cart.model";
+import { Order } from "../models/order.model";
 
 export const getCart = async (userId: string) => {
   const cart = await Cart.findOne({ userId });
@@ -56,4 +57,31 @@ export const removeItem = async (userId: string, itemId: string) => {
 
 export const clearCart = async (userId: string) => {
   return Cart.findOneAndUpdate({ userId }, { items: [] }, { new: true });
+};
+
+export const checkoutCart = async (userId: string) => {
+  const cart = await Cart.findOne({ userId });
+
+  if(!cart) {
+    throw new Error("Cart not found");
+  }
+
+  if (cart.items.length === 0) {
+    throw new Error("Cart is empty");
+  }
+
+  const totalPrice = cart.items.reduce((total, item) => total + ( item.price ?? 0) * item.quantity, 0);
+
+  const newOrder = new Order({
+    userId: cart.userId,
+    items: cart.items,
+    totalPrice,
+  });
+
+  await newOrder.save();
+
+  // Clear the cart after order placed
+  await Cart.findOneAndUpdate({ userId }, { items: [] });
+
+  return newOrder;
 };
