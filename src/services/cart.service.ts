@@ -70,7 +70,11 @@ export const checkoutCart = async (userId: string) => {
     throw new Error("Cart is empty");
   }
 
-  const totalPrice = cart.items.reduce((total, item) => total + ( item.price ?? 0) * item.quantity, 0);
+  const subtotal = cart.items.reduce((sum, item) => sum + (( item.price ?? 0) * item.quantity), 0);
+
+  const taxRate = 0.10; // 10% tax (example)
+  const taxAmount = subtotal * taxRate;
+  const totalPrice = subtotal + taxAmount;
 
   const newOrder = new Order({
     userId: cart.userId,
