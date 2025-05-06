@@ -19,6 +19,10 @@ const orderSchema = new Schema<IOrder>(
       type: Number,
       required: true,
     },
+    address: {
+      type: String,
+      required: true,
+    }
   },
   { timestamps: true }
 );

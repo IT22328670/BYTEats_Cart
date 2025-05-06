@@ -11,6 +11,7 @@ export const getCart = async (userId: string) => {
       _id: item.itemId,
       name: item.name,
       price: item.price,
+      imageUrl: item.imageUrl,
     },
     quantity: item.quantity,
   }));
@@ -19,17 +20,17 @@ export const getCart = async (userId: string) => {
 };
 
 
-export const addToCart = async (userId: string, itemId: string, quantity: number, name: string, price: number) => {
+export const addToCart = async (userId: string, itemId: string, quantity: number, name: string, price: number, imageUrl: string) => {
   let cart = await Cart.findOne({ userId });
 
   if (!cart) {
-    cart = new Cart({ userId, items: [{ itemId, quantity, name, price }] });
+    cart = new Cart({ userId, items: [{ itemId, quantity, name, price, imageUrl }] });
   } else {
     const item = cart.items.find(item => item.itemId.toString() === itemId);
     if (item) {
       item.quantity += quantity;
     } else {
-      cart.items.push({ itemId, quantity, name, price });
+      cart.items.push({ itemId, quantity, name, price, imageUrl });
     }
   }
 
@@ -59,7 +60,7 @@ export const clearCart = async (userId: string) => {
   return Cart.findOneAndUpdate({ userId }, { items: [] }, { new: true });
 };
 
-export const checkoutCart = async (userId: string) => {
+export const checkoutCart = async (userId: string, address: string) => {
   const cart = await Cart.findOne({ userId });
 
   if(!cart) {
@@ -80,6 +81,7 @@ export const checkoutCart = async (userId: string) => {
     userId: cart.userId,
     items: cart.items,
     totalPrice,
+    address,
   });
 
   await newOrder.save();

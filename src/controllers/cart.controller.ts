@@ -13,8 +13,8 @@ export const getCart = async (req: Request, res: Response) => {
 
 export const addToCart = async (req: Request, res: Response) => {
   try {
-    const { userId, itemId, quantity, name, price } = req.body;
-    const cart = await cartService.addToCart(userId, itemId, quantity, name, price);
+    const { userId, itemId, quantity, name, price, imageUrl } = req.body;
+    const cart = await cartService.addToCart(userId, itemId, quantity, name, price, imageUrl);
     res.json(cart);
   } catch (err) {
     res.status(500).json({ error: 'Failed to add item', message: (err as Error).message });
@@ -54,7 +54,8 @@ export const clearCart = async (req: Request, res: Response) => {
 export const checkoutCart = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const order = await cartService.checkoutCart(userId);
+    const { address } = req.body;
+    const order = await cartService.checkoutCart(userId, address);
     res.status(201).json({ message: "Order placed successfully", order });
   } catch (err) {
     res.status(500).json({ error: 'Failed to checkout cart', message: (err as Error).message });

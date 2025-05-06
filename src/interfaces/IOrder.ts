@@ -9,4 +9,5 @@ export interface IOrder {
     price: number;
   }[];
   totalPrice: number;
+  address: string;
 }
